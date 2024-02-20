@@ -99,6 +99,11 @@ router.get('/', async (req, res, next) => {
     // Phase 3A: Include total number of results returned from the query without
         // limits and offsets as a property of count on the result
         // Note: This should be a new query
+        const totalStudents = await Student.count("id")
+        result.count = totalStudents 
+            
+
+
 
     result.rows = await Student.findAll({
         attributes: ['id', 'firstName', 'lastName', 'leftHanded'],
@@ -113,6 +118,8 @@ router.get('/', async (req, res, next) => {
 
 
     });
+
+ 
 
     // Phase 2E: Include the page number as a key of page in the response data
         // In the special case (page=0, size=0) that returns all students, set
@@ -147,6 +154,19 @@ router.get('/', async (req, res, next) => {
             }
         */
     // Your code here 
+
+    let totalPages = await Student.count('id')
+    let numOfPage = Math.ceil(totalPages / size)
+
+    result.pageCount = numOfPage
+
+    if (page==0, size==0) {
+        totalPages = 1
+    }
+
+    // totalStudents = await Student.count("id")
+    // result.count = totalStudents 
+        
 
     res.json(result);
 });
