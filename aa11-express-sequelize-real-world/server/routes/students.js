@@ -9,6 +9,9 @@ const { Op } = require("sequelize");
 // List
 router.get('/', async (req, res, next) => {
     let errorResult = { errors: [], count: 0, pageCount: 0 };
+ 
+
+    
 
     // Phase 2A: Use query params for page & size
     // Your code here 
@@ -73,6 +76,7 @@ router.get('/', async (req, res, next) => {
     result.rows = await Student.findAll({
         attributes: ['id', 'firstName', 'lastName', 'leftHanded'],
         where,
+        order: [['lastName'],['firstName']]
         // Phase 1A: Order the Students search results
     });
 
