@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 // Import model(s)
-const { Classroom } = require('../db/models');
+const { Classroom, Student, Supply, sequelize } = require('../db/models');
 const { Op } = require('sequelize');
 
 // List of classrooms
@@ -68,6 +68,10 @@ router.get('/:id', async (req, res, next) => {
 
     // Phase 5: Supply and Student counts, Overloaded classroom
         // Phase 5A: Find the number of supplies the classroom has and set it as
+
+
+
+
             // a property of supplyCount on the response
         // Phase 5B: Find the number of students in the classroom and set it as
             // a property of studentCount on the response
@@ -76,8 +80,32 @@ router.get('/:id', async (req, res, next) => {
             // classroom
         // Optional Phase 5D: Calculate the average grade of the classroom 
     // Your code here 
+    const supplyCount = await Classroom.findByPk(req.params.id, {
+        attributes: {
+            include:[
+                [
+                    sequelize.fn("COUNT", sequelize.col("Supplies.id")),"supplyCount"
+                ]
+            ],
+            
+            
+        },
+        include: {
+            model: Supply,
+            attributes: []
+        }
+    })
+    // console.log(supplyCount)
+    // classroom.toJSON();
+    classroom.toJSON();
+    //    let  count = supplyCount.supplyCount
+    classroom.supplyCount = supplyCount
+    //     console.log(count)
+    console.log(classroom)
 
-    res.json(classroom);
+
+    res.json(classroom.toJSON())
+    // res.json(supplyCount)
 });
 
 // Export class - DO NOT MODIFY

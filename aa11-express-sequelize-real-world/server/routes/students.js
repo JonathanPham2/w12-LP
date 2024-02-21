@@ -72,9 +72,34 @@ router.get('/', async (req, res, next) => {
                 message of 'Lefty should be either true or false' to
                 errorResult.errors
     */
-    const where = {};
-
+   const where = {};
+   
+   let { firstName, lastName, lefty } = req.query;
+   if(firstName) {
+    where.firstName = {
+        [Op.substring]: firstName
+    }
+   }
     // Your code here 
+    if(lastName) {
+        where.lastName = {
+            [Op.substring]: lastName
+        }
+
+       }
+
+       if(lefty === "true") {
+        where.leftHanded = {
+            [Op.is]: true
+        
+        }
+       }
+       else if (lefty === "false"){
+        where.leftHanded = {
+            [Op.is]: false
+        }
+       }
+
 
 
     // Phase 2C: Handle invalid params with "Bad Request" response
@@ -99,9 +124,7 @@ router.get('/', async (req, res, next) => {
     // Phase 3A: Include total number of results returned from the query without
         // limits and offsets as a property of count on the result
         // Note: This should be a new query
-        const totalStudents = await Student.count("id")
-        result.count = totalStudents 
-            
+        
 
 
 
@@ -118,7 +141,10 @@ router.get('/', async (req, res, next) => {
 
 
     });
-
+    // const totalStudents = await result.rows.count("id")
+    result.count = result.rows.length
+    // result.count = await result.rows.count("id")
+        
  
 
     // Phase 2E: Include the page number as a key of page in the response data
